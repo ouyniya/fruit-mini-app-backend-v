@@ -1,0 +1,36 @@
+# Node.js
+node_modules/
+dist/
+build/
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma
+prisma/generated/
+.prisma/
+
+# Environment variables
+.env
+.env.* # optional: ignore all environment-specific env files
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# CSV or seed data
+fruit.csv
+*.csv
+
+# Coverage reports
+coverage/
+
+# IDEs
+.vscode/
+.idea/
+
+# Others
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

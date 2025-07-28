@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  // provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  username String  @unique @db.VarChar(50)
+  email    String  @unique @db.VarChar(100)
+  password String  @db.VarChar(255)
+  role     Role    @default(USER)
+  isActive Boolean @default(true)
+
+  // Security fields
+  failedLoginAttempts Int       @default(0)
+  lockoutUntil        DateTime?
+  lastLoginAt         DateTime?
+  lastLoginIP         String?
+  passwordChangedAt   DateTime  @default(now())
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  refreshTokens RefreshToken[]
+  loginLogs     LoginLog[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique @db.VarChar(255)
+  userId    Int
+  expiresAt DateTime
+  isRevoked Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  email     String?  @db.VarChar(100)
+  ipAddress String   @db.VarChar(45)
+  userAgent String?  @db.Text
+  success   Boolean
+  reason    String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("login_logs")
+}
+
+model FruitsInventory {
+  id            Int      @id @default(autoincrement())
+  inventoryDate DateTime 
+  productName   String
+  color         String
+  amount        Float
+  unit          Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Role {
+  USER
+}
